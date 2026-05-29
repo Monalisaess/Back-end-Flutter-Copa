@@ -1,0 +1,16 @@
+# Python
+venv/
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+
+# Ambiente local (nunca commitar)
+.env
+
+# IDE / SO
+.idea/
+.vscode/
+.DS_Store
+*.swp
