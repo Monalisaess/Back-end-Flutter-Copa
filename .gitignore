@@ -8,6 +8,7 @@ __pycache__/
 
 # Ambiente local (nunca commitar)
 .env
+COMO_PUBLICAR.md
 
 # IDE / SO
 .idea/
