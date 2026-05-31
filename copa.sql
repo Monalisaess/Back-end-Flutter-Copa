@@ -13,7 +13,9 @@ CREATE TABLE `selecao` (
   `id_selecao` INT(11) NOT NULL AUTO_INCREMENT,
   `nome`        VARCHAR(100) DEFAULT NULL,
   `grupo`       VARCHAR(50)  DEFAULT NULL,
-  PRIMARY KEY (`id_selecao`)
+  `id_usuario_fk` INT(11) DEFAULT NULL,
+  PRIMARY KEY (`id_selecao`),
+  KEY `idx_selecao_usuario` (`id_usuario_fk`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- 2. TABELA DE JOGADORES
@@ -22,8 +24,10 @@ CREATE TABLE `jogador` (
   `nome`          VARCHAR(100) DEFAULT NULL,
   `posicao`       VARCHAR(100) DEFAULT NULL,
   `id_selecao_fk` INT(11)      DEFAULT NULL,
+  `id_usuario_fk` INT(11)      DEFAULT NULL,
   PRIMARY KEY (`id_jogador`),
   KEY `id_selecao_fk` (`id_selecao_fk`),
+  KEY `idx_jogador_usuario` (`id_usuario_fk`),
   CONSTRAINT `jogador_ibfk_1` FOREIGN KEY (`id_selecao_fk`) REFERENCES `selecao` (`id_selecao`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -35,9 +39,11 @@ CREATE TABLE `partidas` (
   `id_selecao_visitante_fk` INT(11) NOT NULL,
   `placar_casa`             INT(11) DEFAULT NULL,
   `placar_visitante`        INT(11) DEFAULT NULL,
+  `id_usuario_fk`           INT(11) DEFAULT NULL,
   PRIMARY KEY (`id_partidas`),
   KEY `id_selecao_casa_fk` (`id_selecao_casa_fk`),
   KEY `id_selecao_visitante_fk` (`id_selecao_visitante_fk`),
+  KEY `idx_partidas_usuario` (`id_usuario_fk`),
   CONSTRAINT `partidas_ibfk_1` FOREIGN KEY (`id_selecao_casa_fk`)      REFERENCES `selecao` (`id_selecao`),
   CONSTRAINT `partidas_ibfk_2` FOREIGN KEY (`id_selecao_visitante_fk`) REFERENCES `selecao` (`id_selecao`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -54,6 +60,21 @@ CREATE TABLE `usuario` (
   PRIMARY KEY (`id_usuario`),
   UNIQUE KEY `email_unique` (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+ALTER TABLE `selecao`
+  ADD CONSTRAINT `fk_selecao_usuario`
+  FOREIGN KEY (`id_usuario_fk`) REFERENCES `usuario` (`id_usuario`)
+  ON DELETE CASCADE;
+
+ALTER TABLE `jogador`
+  ADD CONSTRAINT `fk_jogador_usuario`
+  FOREIGN KEY (`id_usuario_fk`) REFERENCES `usuario` (`id_usuario`)
+  ON DELETE CASCADE;
+
+ALTER TABLE `partidas`
+  ADD CONSTRAINT `fk_partidas_usuario`
+  FOREIGN KEY (`id_usuario_fk`) REFERENCES `usuario` (`id_usuario`)
+  ON DELETE CASCADE;
 
 
 -- ============================================================

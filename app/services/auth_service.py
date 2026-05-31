@@ -1,6 +1,7 @@
 """Regras de negócio de autenticação: cadastro, login e recuperação de senha."""
 
 import pymysql
+from flask import session
 
 from app.database.connection import conectaBanco
 
@@ -23,7 +24,17 @@ def cadastro_usuario(dados: dict) -> dict:
                  VALUES (%s, %s, %s, %s, %s);"""
         cursor.execute(sql, (nome, email, senha, pergunta, resposta))
         bd.commit()
-        return {"mensagem": "Usuário cadastrado com sucesso!", "code": 201}
+        id_usuario = cursor.lastrowid
+        session["id_usuario"] = id_usuario
+        session["email"] = email
+        return {
+            "mensagem": "Usuário cadastrado com sucesso!",
+            "code": 201,
+            "id_usuario": id_usuario,
+            "idUsuario": id_usuario,
+            "nome": nome,
+            "email": email,
+        }
     except pymysql.MySQLError:
         return {"mensagem": "Erro ao cadastrar. Email já cadastrado no sistema.", "code": 400}
     finally:
@@ -46,9 +57,12 @@ def login_usuario(dados: dict) -> dict:
     bd.close()
 
     if usuario:
+        session["id_usuario"] = usuario[0]
+        session["email"] = usuario[2]
         return {
             "code": 200,
             "id_usuario": usuario[0],
+            "idUsuario": usuario[0],
             "nome": usuario[1],
             "email": usuario[2],
         }

@@ -22,17 +22,20 @@ def consulta_partidas():
 #                                                  placarEquipeVisitante, idEquipeCasa, idEquipeVisitante}
 @partidas_bp.route("/cadastrapartida", methods=["POST"])
 def create_partida():
-    return jsonify(criar_partida(request.get_json() or {}))
+    resultado = criar_partida(request.get_json() or {})
+    return jsonify(resultado), resultado.get("code", 200)
 
 
 # Flutter chama: PUT /atualizapartida  →  body: {idPartida, dataPartida, placarEquipeCasa,
 #                                                 placarEquipeVisitante, idEquipeCasa, idEquipeVisitante}
 @partidas_bp.route("/atualizapartida", methods=["PUT"])
 def update_partida():
-    return jsonify(atualizar_partida(request.get_json() or {}))
+    resultado = atualizar_partida(request.get_json() or {})
+    return jsonify(resultado), resultado.get("code", 200)
 
 
 # Flutter chama: DELETE /removepartida  →  body: {idPartida}
 @partidas_bp.route("/removepartida", methods=["DELETE"])
 def delete_partida():
-    return jsonify(remover_partida(request.get_json() or {}))
+    resultado = remover_partida(request.get_json() or {})
+    return jsonify(resultado), resultado.get("code", 200)
